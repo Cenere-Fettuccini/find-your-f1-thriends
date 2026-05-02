@@ -10,7 +10,7 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.
 // --- PRIVACY & COMMUNITY LOGIC ---
 const urlParams = new URLSearchParams(window.location.search);
 const communityId = urlParams.get('cid') || 'global';
-const GRID_SIZE = 0.5; 
+const GRID_SIZE = 1.8; 
 
 // --- INITIALIZE UI ---
 const memberCountEl = document.getElementById('memberCount');
