@@ -76,22 +76,25 @@ const updateRetireButton = () => {
     return;
   }
 
-  // Check if this name exists on the grid
-  const exists = markers.some(m => m.name.toLowerCase() === targetName.toLowerCase());
+  // Find the exact marker to get correct casing
+  const marker = markers.find(m => m.name.toLowerCase() === targetName.toLowerCase());
   
-  if (exists) {
+  if (marker) {
     retireBtn.classList.remove('hidden');
-    retireBtn.innerText = `Retire ${targetName} from Grid`;
-    retireBtn.dataset.target = targetName;
+    retireBtn.innerText = `Retire ${marker.name} from Grid`;
+    retireBtn.dataset.target = marker.name;
   } else {
     // Only hide if we don't have a stored name to fallback to
-    if (!enteredName && storedName && markers.some(m => m.name.toLowerCase() === storedName.toLowerCase())) {
-        retireBtn.classList.remove('hidden');
-        retireBtn.innerText = `Retire ${storedName} from Grid`;
-        retireBtn.dataset.target = storedName;
-    } else {
-        retireBtn.classList.add('hidden');
+    if (!enteredName && storedName) {
+        const storedMarker = markers.find(m => m.name.toLowerCase() === storedName.toLowerCase());
+        if (storedMarker) {
+            retireBtn.classList.remove('hidden');
+            retireBtn.innerText = `Retire ${storedMarker.name} from Grid`;
+            retireBtn.dataset.target = storedMarker.name;
+            return;
+        }
     }
+    retireBtn.classList.add('hidden');
   }
 };
 
@@ -185,7 +188,8 @@ retireBtn.addEventListener('click', async () => {
       markers = markers.filter(m => m.name.toLowerCase() !== targetName.toLowerCase());
       localStorage.setItem(`f1_map_${communityId}`, JSON.stringify(markers));
     } else {
-      await supabase.from('drivers').delete().eq('name', targetName).eq('community_id', communityId);
+      const { error } = await supabase.from('drivers').delete().eq('name', targetName).eq('community_id', communityId);
+      if (error) { alert('Race Control Error: Could not retire driver.'); return; }
     }
     
     if (localStorage.getItem('my_grid_nickname') === targetName) {
