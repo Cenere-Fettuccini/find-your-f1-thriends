@@ -148,6 +148,13 @@ h1, h2, h3, .f1-font {
   box-shadow: none;
 }
 
+.btn-danger-confirm {
+  background: var(--f1-red) !important;
+  border-color: var(--f1-red) !important;
+  color: white !important;
+  box-shadow: 0 0 20px rgba(225, 6, 0, 0.4);
+}
+
 /* Floating Join Panel (Squircle) */
 .join-panel {
   position: fixed;

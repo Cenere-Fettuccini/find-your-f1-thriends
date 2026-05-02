@@ -198,14 +198,14 @@ retireBtn.addEventListener('click', async () => {
   // Modern Double-Click Confirmation
   if (!retireBtn.classList.contains('confirm-mode')) {
     retireBtn.classList.add('confirm-mode');
+    retireBtn.classList.add('btn-danger-confirm');
     retireBtn.innerText = `CONFIRM RETIRE ${finalName.toUpperCase()}?`;
-    retireBtn.style.background = '#ff0000';
     
     // Reset after 3 seconds if not clicked again
     retireConfirmTimeout = setTimeout(() => {
       retireBtn.classList.remove('confirm-mode');
-      retireBtn.innerText = `Retire ${finalName} from Grid`;
-      retireBtn.style.background = '';
+      retireBtn.classList.remove('btn-danger-confirm');
+      updateRetireButton();
     }, 3000);
     return;
   }
@@ -230,15 +230,15 @@ retireBtn.addEventListener('click', async () => {
     }
     
     await fetchDrivers();
-    updateRetireButton();
     joinPanel.classList.remove('active');
     alert(`${finalName} has successfully retired from the grid.`);
   } catch (err) {
     console.error('Retire Error:', err);
     alert('Race Control Error: Could not remove you from the grid.');
-    updateRetireButton();
   } finally {
+    retireBtn.classList.remove('btn-danger-confirm');
     retireBtn.disabled = false;
+    updateRetireButton();
   }
 });
 
