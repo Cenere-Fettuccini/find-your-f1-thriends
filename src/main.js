@@ -222,7 +222,23 @@ joinForm.addEventListener('submit', async (e) => {
   if (!proposedLocation) return;
   const nickname = nicknameInput.value.trim();
   if (!nickname) return;
-  const newEntry = { name: nickname, lat: proposedLocation.lat, lng: proposedLocation.lng, timestamp: Date.now(), community_id: communityId };
+  
+  // Fetch IP for spam prevention
+  let userIp = '0.0.0.0';
+  try {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    userIp = data.ip;
+  } catch (e) { console.warn('Could not fetch IP, using fallback'); }
+
+  const newEntry = { 
+    name: nickname, 
+    lat: proposedLocation.lat, 
+    lng: proposedLocation.lng, 
+    timestamp: Date.now(), 
+    community_id: communityId,
+    ip_address: userIp
+  };
 
   if (isDemoMode) {
     const idx = markers.findIndex(m => m.name.toLowerCase() === nickname.toLowerCase());
