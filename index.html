@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GRID LOCATOR | F1 Community Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  </head>
+  <body>
+    <div id="loader" class="loader">
+      <div class="lights-container">
+        <div class="light" id="light1"></div>
+        <div class="light" id="light2"></div>
+        <div class="light" id="light3"></div>
+        <div class="light" id="light4"></div>
+        <div class="light" id="light5"></div>
+      </div>
+      <div class="loader-text">Warming Tyres...</div>
+    </div>
+    <div id="app" class="hidden">
+      <div id="map"></div>
+
+      <div class="overlay">
+        <header class="header">
+          <div class="logo-container">
+            <h1 class="logo">GRID LOCATOR</h1>
+            <span class="subtitle">F1 THREADS COMMUNITY</span>
+          </div>
+          <div class="controls">
+            <button id="joinBtn" class="btn">
+              <span id="joinIcon"></span>
+              Join the Grid
+            </button>
+          </div>
+        </header>
+
+        <div class="status-bar">
+          <div class="status-dot"></div>
+          <span id="memberCount">Connecting to Race Control...</span>
+        </div>
+      </div>
+
+      <!-- Join Panel (Squircle) -->
+      <div id="joinPanel" class="join-panel">
+        <div class="sidebar-header">
+          <div class="tabs">
+            <button id="tabJoin" class="tab-btn active">Join Grid</button>
+            <button id="tabSearch" class="tab-btn">Search Grid</button>
+          </div>
+          <button id="closeSidebar" class="close-btn">&times;</button>
+        </div>
+        
+        <div class="sidebar-content">
+          <!-- JOIN SECTION -->
+          <div id="sectionJoin" class="panel-section">
+            <div class="selection-guide">
+              <div class="guide-icon"><span id="mapPinIcon"></span></div>
+              <p>Tap the map to set your <strong>Sector</strong>, or use auto-detect:</p>
+            </div>
+
+            <button type="button" id="locateBtn" class="btn btn-secondary btn-full" style="margin-bottom: 1rem;">
+              Detect My Location
+            </button>
+
+            <button type="button" id="retireBtn" class="btn btn-secondary btn-full hidden" style="margin-bottom: 2rem; color: #666; border-color: #333;">
+              Retire from the Race
+            </button>
+
+            <form id="joinForm">
+              <div class="form-group">
+                <label for="nickname">Display Name</label>
+                <input type="text" id="nickname" placeholder="e.g. LewisFan44" required maxlength="15" />
+              </div>
+
+              <div id="selectionStatus" class="selection-status">
+                <div class="pulse-ring"></div>
+                <span>Awaiting Map Selection...</span>
+              </div>
+
+              <div class="sidebar-actions" style="margin-top: 2rem;">
+                <button type="submit" id="submitBtn" class="btn btn-full" disabled>Select a Location First</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- SEARCH SECTION -->
+          <div id="sectionSearch" class="panel-section hidden">
+            <div class="form-group">
+              <input type="text" id="searchInput" placeholder="Find a driver..." />
+            </div>
+            <div id="driverList" class="driver-list">
+              <!-- Drivers will be injected here -->
+            </div>
+          </div>
+
+          <!-- PROFILE SECTION -->
+          <div id="sectionProfile" class="panel-section hidden">
+            <div class="profile-header">
+              <div class="profile-avatar"><span id="userIcon"></span></div>
+              <h2 id="profileName">Driver Name</h2>
+              <div class="profile-badge">Active Driver</div>
+            </div>
+            
+            <div class="profile-details">
+              <div class="detail-row">
+                <label>Current Sector</label>
+                <span>100km Precision Zone</span>
+              </div>
+              <div class="detail-row">
+                <label>Verified Since</label>
+                <span id="profileDate">--/--/--</span>
+              </div>
+            </div>
+
+            <div class="sidebar-actions" style="margin-top: 3rem;">
+              <button id="backToList" class="btn btn-secondary btn-full">Back to Grid List</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
