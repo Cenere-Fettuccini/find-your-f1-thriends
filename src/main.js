@@ -180,6 +180,8 @@ document.getElementById('locateBtn').addEventListener('click', () => {
   );
 });
 
+let retireConfirmTimeout = null;
+
 retireBtn.addEventListener('click', async () => {
   const enteredName = nicknameInput.value.trim();
   const storedName = localStorage.getItem('my_grid_nickname');
@@ -190,32 +192,53 @@ retireBtn.addEventListener('click', async () => {
     return;
   }
 
-  // Find the exact marker to ensure we have the right casing for the database
   const marker = markers.find(m => m.name.toLowerCase() === targetName.toLowerCase());
   const finalName = marker ? marker.name : targetName;
 
-  if (confirm(`Retire from the race and remove "${finalName}" from the grid?`)) {
-    try {
-      if (isDemoMode) {
-        markers = markers.filter(m => m.name.toLowerCase() !== finalName.toLowerCase());
-        localStorage.setItem(`f1_map_${communityId}`, JSON.stringify(markers));
-      } else {
-        const { error } = await supabase.from('drivers').delete().eq('name', finalName).eq('community_id', communityId);
-        if (error) throw error;
-      }
-      
-      if (localStorage.getItem('my_grid_nickname') === finalName) {
-          localStorage.removeItem('my_grid_nickname');
-      }
-      
-      await fetchDrivers();
-      updateRetireButton();
-      joinPanel.classList.remove('active');
-      alert(`${finalName} has successfully retired from the grid.`);
-    } catch (err) {
-      console.error('Retire Error:', err);
-      alert('Race Control Error: Could not remove you from the grid. Check your connection.');
+  // Modern Double-Click Confirmation
+  if (!retireBtn.classList.contains('confirm-mode')) {
+    retireBtn.classList.add('confirm-mode');
+    retireBtn.innerText = `CONFIRM RETIRE ${finalName.toUpperCase()}?`;
+    retireBtn.style.background = '#ff0000';
+    
+    // Reset after 3 seconds if not clicked again
+    retireConfirmTimeout = setTimeout(() => {
+      retireBtn.classList.remove('confirm-mode');
+      retireBtn.innerText = `Retire ${finalName} from Grid`;
+      retireBtn.style.background = '';
+    }, 3000);
+    return;
+  }
+
+  // If we are here, it's the second click
+  clearTimeout(retireConfirmTimeout);
+  retireBtn.classList.remove('confirm-mode');
+  retireBtn.innerText = "RETIRING...";
+  retireBtn.disabled = true;
+
+  try {
+    if (isDemoMode) {
+      markers = markers.filter(m => m.name.toLowerCase() !== finalName.toLowerCase());
+      localStorage.setItem(`f1_map_${communityId}`, JSON.stringify(markers));
+    } else {
+      const { error } = await supabase.from('drivers').delete().eq('name', finalName).eq('community_id', communityId);
+      if (error) throw error;
     }
+    
+    if (localStorage.getItem('my_grid_nickname') === finalName) {
+        localStorage.removeItem('my_grid_nickname');
+    }
+    
+    await fetchDrivers();
+    updateRetireButton();
+    joinPanel.classList.remove('active');
+    alert(`${finalName} has successfully retired from the grid.`);
+  } catch (err) {
+    console.error('Retire Error:', err);
+    alert('Race Control Error: Could not remove you from the grid.');
+    updateRetireButton();
+  } finally {
+    retireBtn.disabled = false;
   }
 });
 
