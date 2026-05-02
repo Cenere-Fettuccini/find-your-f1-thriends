@@ -118,7 +118,8 @@ const renderMarkers = (data) => {
     marker.on('click', (e) => { L.DomEvent.stopPropagation(e); showProfile(entry); });
     circle.on('click', (e) => { L.DomEvent.stopPropagation(e); showProfile(entry); });
   });
-  memberCountEl.innerText = `${data.length} DRIVERS ON GRID (${communityId.toUpperCase()})`;
+  const mode = isDemoMode ? 'OFFLINE' : 'LIVE';
+  memberCountEl.innerText = `${data.length} DRIVERS ON GRID (${mode}: ${communityId.toUpperCase()})`;
   updateRetireButton(); // Re-check button state whenever grid updates
 };
 
