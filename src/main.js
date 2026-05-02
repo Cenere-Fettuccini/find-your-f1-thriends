@@ -42,7 +42,13 @@ const initIcons = () => {
 initIcons();
 
 // --- MAP INITIALIZATION ---
-const map = L.map('map', { zoomControl: false, attributionControl: false, minZoom: 3, worldCopyJump: true }).setView([20, 0], 3);
+const map = L.map('map', { 
+  zoomControl: false, 
+  attributionControl: false, 
+  minZoom: 3, 
+  worldCopyJump: true,
+  doubleClickZoom: false // Disable accidental zooming on double-click
+}).setView([20, 0], 3);
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
 
@@ -159,7 +165,7 @@ const lockToSector = (lat, lng) => {
   const submitBtn = document.getElementById('submitBtn');
   submitBtn.disabled = false; submitBtn.innerText = 'Confirm Grid Position';
   selectionStatus.querySelector('span').innerText = 'Sector Locked - Ready to Join';
-  map.setView([sLat, sLng], 7);
+  map.panTo([sLat, sLng]); // Panning instead of zooming in
 };
 
 // --- ACTIONS ---

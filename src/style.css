@@ -596,6 +596,7 @@ h1, h2, h3, .f1-font {
 @media (max-width: 768px) {
   .header {
     padding: 1rem;
+    padding-top: calc(1rem + env(safe-area-inset-top)); /* Added safe area top */
     align-items: center;
   }
 
@@ -622,6 +623,7 @@ h1, h2, h3, .f1-font {
     transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     background: rgba(20, 20, 20, 0.8);
     box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+    padding-bottom: env(safe-area-inset-bottom); /* Added safe area bottom */
   }
 
   .join-panel.active {
