@@ -24,18 +24,33 @@ By default, the app uses a "Community ID" (`cid`) in the URL.
 ## 💾 Connecting a Database (Supabase)
 To make the map persistent for everyone (not just local), follow these steps:
 1. Create a free project at [supabase.com](https://supabase.com).
-2. Create a table called `locations` with:
-   - `name` (text)
-   - `lat` (float)
-   - `lng` (float)
-   - `type` (text)
-   - `community` (text)
-3. Add your `SUPABASE_URL` and `SUPABASE_ANON_KEY` to an `.env` file:
+2. Go to the **SQL Editor** and run the following command to create the table and security policies:
+
+```sql
+CREATE TABLE drivers (
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  name TEXT NOT NULL,
+  lat DOUBLE PRECISION NOT NULL,
+  lng DOUBLE PRECISION NOT NULL,
+  timestamp BIGINT NOT NULL,
+  community_id TEXT NOT NULL DEFAULT 'global'
+);
+
+-- Enable Security
+ALTER TABLE drivers ENABLE ROW LEVEL SECURITY;
+
+-- Allow anyone to join and see the grid
+CREATE POLICY "Public Access" ON drivers FOR ALL TO anon USING (true) WITH CHECK (true);
+
+-- Ensure users can update their own location by nickname
+CREATE UNIQUE INDEX drivers_name_community_idx ON drivers (name, community_id);
+```
+
+3. Add your `SUPABASE_URL` and `SUPABASE_ANON_KEY` to your GitHub Repository Secrets (for deployment) or a local `.env` file for testing:
    ```env
    VITE_SUPABASE_URL=your_url
    VITE_SUPABASE_ANON_KEY=your_key
    ```
-4. Update `src/main.js` to uncomment the Supabase logic.
 
 ## 🛠️ Local Development
 ```bash
